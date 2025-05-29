@@ -3,8 +3,6 @@ import { PrismaClient } from "../../generated/prisma/index.js";
 const prisma = new PrismaClient();
 
 const updateReview = async (id, userId, propertyId, rating, comment) => {
-  // const review = await prisma.review.findUnique({ where: { id } });
-  // console.log(review);
   const updateReview = await prisma.review.updateMany({
     where: { id },
     data: {
@@ -20,7 +18,6 @@ const updateReview = async (id, userId, propertyId, rating, comment) => {
 
   return {
     message: `Review with id ${id} updated successfully`,
-    review: updateReview,
   };
 };
 
