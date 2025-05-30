@@ -12,6 +12,7 @@ const getHosts = async () => {
       phoneNumber: true,
       profilePicture: true,
       aboutMe: true,
+      listings: true,
     },
   });
 };

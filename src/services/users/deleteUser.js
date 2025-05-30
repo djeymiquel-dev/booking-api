@@ -1,14 +1,13 @@
+import NotFoundError from "../../errors/NotFoundError.js";
 import { PrismaClient } from "../../generated/prisma/index.js";
 const prisma = new PrismaClient();
 const deleteUser = async (id) => {
-  const user = await prisma.user.delete({
+  const deleteUser = await prisma.user.delete({
     where: { id },
   });
-  if (!user) {
-    throw new Error(`User with id ${id} not found.`);
+  if (!deleteUser || deleteUser.count === 0) {
+    throw new NotFoundError("User", id);
   }
-  return {
-    message: `User with id ${id} deleted successfully`,
-  };
+  return id;
 };
 export default deleteUser;

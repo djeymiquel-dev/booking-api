@@ -4,29 +4,33 @@ import getUserById from "../../src/services/users/getUserById.js";
 import createUser from "../../src/services/users/createUser.js";
 import updateUser from "../../src/services/users/updateUser.js";
 import deleteUser from "../../src/services/users/deleteUser.js";
+import notFoundErrorHandler from "../../src/middleware/notFoundErrorHandler.js";
+import authMiddleware from "../middleware/auth.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const users = await getUsers();
+  const { username, email } = req.query;
+  const users = await getUsers({ username, email });
   res.status(200).json(users);
 });
 
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const user = await getUserById(id);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    res.status(200).json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+router.get(
+  "/:id",
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const user = await getUserById(id);
 
-router.post("/", async (req, res) => {
+      res.status(200).json(user);
+    } catch (error) {
+      next(error);
+    }
+  },
+  notFoundErrorHandler
+);
+
+router.post("/", async (req, res, next) => {
   const { username, password, name, email, phoneNumber, profilePicture } =
     req.body;
   try {
@@ -40,12 +44,11 @@ router.post("/", async (req, res) => {
     );
     res.status(201).json(newUser);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    next(error);
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", authMiddleware, async (req, res) => {
   const { id } = req.params;
   const { username, password, name, email, phoneNumber, profilePicture } =
     req.body;
@@ -66,15 +69,21 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await deleteUser(id);
-    res.status(200).json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+router.delete(
+  "/:id",
+
+  async (req, res, next) => {
+    const { id } = req.params;
+    try {
+      const deletedUser = await deleteUser(id);
+      res.status(200).json({
+        message: `User with id ${deletedUser} was deleted successfully`,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  notFoundErrorHandler
+);
 
 export default router;

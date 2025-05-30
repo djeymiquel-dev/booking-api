@@ -16,9 +16,7 @@ const updateReview = async (id, userId, propertyId, rating, comment) => {
     throw new Error(`Review with id ${id} not found.`);
   }
 
-  return {
-    message: `Review with id ${id} updated successfully`,
-  };
+  return id;
 };
 
 export default updateReview;

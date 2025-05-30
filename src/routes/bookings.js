@@ -4,6 +4,7 @@ import getBookingById from "../../src/services/bookings/getBookingById.js";
 import createBooking from "../../src/services/bookings/createBooking.js";
 import updateBooking from "../services/bookings/updateBooking.js";
 import deleteBooking from "../services/bookings/deleteBooking.js";
+import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 const router = express.Router();
 
 router.get("/", async (req, res) => {
@@ -11,19 +12,19 @@ router.get("/", async (req, res) => {
   res.status(200).json(bookings);
 });
 
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const booking = await getBookingById(id);
-    if (!booking) {
-      return res.status(404).json({ error: "Booking not found" });
+router.get(
+  "/:id",
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const booking = await getBookingById(id);
+      res.status(200).json(booking);
+    } catch (error) {
+      next(error);
     }
-    res.status(200).json(booking);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+  },
+  notFoundErrorHandler
+);
 
 router.post("/", async (req, res) => {
   const {

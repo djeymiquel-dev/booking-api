@@ -34,19 +34,32 @@ async function main() {
     });
   }
 
+  for (const amenity of amenities) {
+    await prisma.amenity.upsert({
+      where: { id: amenity.id },
+      update: {},
+      create: amenity,
+    });
+  }
+
   for (const property of properties) {
     await prisma.property.upsert({
       where: { id: property.id },
       update: {},
-      create: property,
-    });
-  }
-
-  for (const amentity of amenities) {
-    await prisma.amentity.upsert({
-      where: { id: amentity.id },
-      update: {},
-      create: amentity,
+      create: {
+        id: property.id,
+        title: property.title,
+        description: property.description,
+        location: property.location,
+        pricePerNight: property.pricePerNight,
+        bedroomCount: property.bedroomCount,
+        bathRoomCount: property.bathRoomCount,
+        maxGuestCount: property.maxGuestCount,
+        host: {
+          connect: { id: property.hostId },
+        },
+        rating: property.rating || 0, // Default to 0 if not provided
+      },
     });
   }
 

@@ -1,15 +1,12 @@
 import { PrismaClient } from "../../generated/prisma/index.js";
 
 const prisma = new PrismaClient();
-const getReviewById = async (id) => {
-  return await prisma.review.findUnique({
-    where: {
-      id,
-    },
+const getAmenities = async () => {
+  return await prisma.amenity.findMany({
     include: {
       properties: true,
     },
   });
 };
 
-export default getReviewById;
+export default getAmenities;

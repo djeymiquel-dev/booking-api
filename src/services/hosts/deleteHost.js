@@ -4,7 +4,7 @@ const deleteHost = async (id) => {
   const host = await prisma.host.delete({
     where: { id },
   });
-  if (!host) {
+  if (!host || host.count === 0) {
     throw new Error(`Host with id ${id} not found.`);
   }
   return {
