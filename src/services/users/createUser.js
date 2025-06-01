@@ -9,9 +9,9 @@ const createUser = async (
   phoneNumber,
   profilePicture
 ) => {
-  if (!username || !password || !name || !email) {
-    throw new Error("Username, password, name, and email are required.");
-  }
+  // if (!username || !password || !name || !email) {
+  //   throw new Error("Username, password, name, and email are required.");
+  // }
   const newUser = await prisma.user.create({
     data: {
       username,

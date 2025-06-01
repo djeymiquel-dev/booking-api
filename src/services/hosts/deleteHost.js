@@ -1,14 +1,13 @@
+import NotFoundError from "../../errors/NotFoundError.js";
 import { PrismaClient } from "../../generated/prisma/index.js";
 const prisma = new PrismaClient();
 const deleteHost = async (id) => {
-  const host = await prisma.host.delete({
+  const host = await prisma.host.deleteMany({
     where: { id },
   });
   if (!host || host.count === 0) {
-    throw new Error(`Host with id ${id} not found.`);
+    throw new NotFoundError("Host", id);
   }
-  return {
-    message: `Host with id ${id} deleted successfully`,
-  };
+  return id;
 };
 export default deleteHost;

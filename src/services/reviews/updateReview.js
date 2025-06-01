@@ -1,3 +1,4 @@
+import NotFoundError from "../../errors/NotFoundError.js";
 import { PrismaClient } from "../../generated/prisma/index.js";
 
 const prisma = new PrismaClient();
@@ -13,10 +14,12 @@ const updateReview = async (id, userId, propertyId, rating, comment) => {
     },
   });
   if (!updateReview || updateReview.count === 0) {
-    throw new Error(`Review with id ${id} not found.`);
+    throw new NotFoundError(`Review`, id);
   }
 
-  return id;
+  return {
+    message: `Review with id ${id} updated successfully`,
+  };
 };
 
 export default updateReview;

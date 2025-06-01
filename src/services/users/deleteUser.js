@@ -2,7 +2,7 @@ import NotFoundError from "../../errors/NotFoundError.js";
 import { PrismaClient } from "../../generated/prisma/index.js";
 const prisma = new PrismaClient();
 const deleteUser = async (id) => {
-  const deleteUser = await prisma.user.delete({
+  const deleteUser = await prisma.user.deleteMany({
     where: { id },
   });
   if (!deleteUser || deleteUser.count === 0) {

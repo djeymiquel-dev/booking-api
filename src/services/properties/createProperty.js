@@ -1,3 +1,4 @@
+import NotFoundError from "../../errors/NotFoundError.js";
 import { PrismaClient } from "../../generated/prisma/index.js";
 const prisma = new PrismaClient();
 
@@ -13,19 +14,6 @@ const createProperty = async (
   rating,
   amenities = []
 ) => {
-  if (
-    !title ||
-    !description ||
-    !location ||
-    pricePerNight === undefined ||
-    bedroomCount === undefined ||
-    bathRoomCount === undefined ||
-    maxGuestCount === undefined ||
-    !hostId
-  ) {
-    throw new Error("All fields are required.");
-  }
-
   // Fetch all amenities from DB
   const allAmenities = await prisma.amenity.findMany();
   // console.log("Alle amenities in DB:", allAmenities);
@@ -38,7 +26,7 @@ const createProperty = async (
   // Check if all provided amenities exist
   for (const name of amenities) {
     if (!amenitySet.has(name)) {
-      throw new Error(`Amenity "${name}" does not exist.`);
+      throw new Error("amenity not found");
     }
     console.log(`Amenity "${name}" exists in the database.`);
   }

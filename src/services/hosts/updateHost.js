@@ -1,3 +1,4 @@
+import NotFoundError from "../../errors/NotFoundError.js";
 import { PrismaClient } from "../../generated/prisma/index.js";
 const prisma = new PrismaClient();
 const updateHost = async (
@@ -23,7 +24,7 @@ const updateHost = async (
     },
   });
   if (!updateHost || updateHost.count === 0) {
-    throw new Error(`Host with id ${id} not found or no changes made.`);
+    throw new NotFoundError(`Host`, id);
   }
 
   return {

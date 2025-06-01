@@ -9,9 +9,6 @@ const createHost = async (
   profilePicture,
   aboutMe
 ) => {
-  if (!username || !password || !name || !email) {
-    throw new Error("Username, password, name, and email are required.");
-  }
   const newHost = await prisma.host.create({
     data: {
       username,

@@ -15,7 +15,7 @@ const createBooking = async (
       user: {
         connect: { id: userId },
       },
-      properties: {
+      property: {
         connect: { id: propertyId },
       },
       checkinDate,
@@ -25,6 +25,8 @@ const createBooking = async (
       bookingStatus,
     },
   });
+  console.log("Booking created:", booking);
+
   return booking;
 };
 export default createBooking;

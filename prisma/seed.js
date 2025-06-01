@@ -58,7 +58,8 @@ async function main() {
         host: {
           connect: { id: property.hostId },
         },
-        rating: property.rating || 0, // Default to 0 if not provided
+        rating: property.rating || 0,
+        // Default to 0 if not provided
       },
     });
   }

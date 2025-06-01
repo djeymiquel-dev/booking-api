@@ -5,6 +5,9 @@ import createAmenity from "../../src/services/amenities/createAmenity.js";
 import updateAmenity from "../../src/services/amenities/updateAmenity.js";
 import deleteAmenity from "../../src/services/amenities/deleteAmenity.js";
 import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
+import authMiddleware from "../middleware/auth.js";
+import ConflictError from "../errors/ConflictError.js";
+// import conflictErrorHandler from "../middleware/conflictErrorHandler.js";
 
 const router = express.Router();
 router.get("/", async (req, res) => {
@@ -30,31 +33,42 @@ router.get(
   notFoundErrorHandler
 );
 
-router.post("/", async (req, res) => {
-  try {
-    const { name } = req.body;
-    const newAmenity = await createAmenity(name);
-    res.status(201).json(newAmenity);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+router.post(
+  "/",
 
-router.put("/:id", async (req, res) => {
-  try {
+  async (req, res, next) => {
+    try {
+      const { name } = req.body;
+      console.log("req body:", req.body);
+
+      const newAmenity = await createAmenity(name);
+      res.status(201).json(newAmenity);
+    } catch (error) {
+      next(error);
+    }
+  }
+  // conflictErrorHandler
+);
+
+router.put(
+  "/:id",
+  // authMiddleware,
+  async (req, res, next) => {
     const { id } = req.params;
     const { name } = req.body;
-    const updatedAmenity = await updateAmenity(id, name);
-    res.status(200).json(updatedAmenity);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+    try {
+      const updatedAmenity = await updateAmenity(id, name);
+      res.status(200).json(updatedAmenity);
+    } catch (error) {
+      next(error);
+    }
+  },
+  notFoundErrorHandler
+);
 
 router.delete(
   "/:id",
+  authMiddleware,
   async (req, res, next) => {
     try {
       const { id } = req.params;

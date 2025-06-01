@@ -1,17 +1,16 @@
 import { PrismaClient } from "../../../src/generated/prisma/index.js";
+import NotFoundError from "../../errors/NotFoundError.js";
 
 const prisma = new PrismaClient();
 
 const deleteBooking = async (id) => {
-  const booking = await prisma.booking.delete({
+  const booking = await prisma.booking.deleteMany({
     where: { id },
   });
-  if (!booking) {
-    throw new Error(`Booking with id ${id} not found.`);
+  if (!booking || booking.count === 0) {
+    throw new NotFoundError("Booking", id);
   }
-  return {
-    message: `Booking with id ${id} deleted successfully`,
-  };
+  return id;
 };
 
 export default deleteBooking;

@@ -4,7 +4,13 @@ const prisma = new PrismaClient();
 const getAmenities = async () => {
   return await prisma.amenity.findMany({
     include: {
-      properties: true,
+      property: {
+        select: {
+          title: true,
+          description: true,
+          location: true,
+        },
+      },
     },
   });
 };

@@ -1,4 +1,4 @@
-import { PrismaClient } from "../../../src/generated/prisma/index.js";
+import { PrismaClient } from "../../generated/prisma/index.js";
 
 const prisma = new PrismaClient();
 const getHostById = async (id) => {
@@ -13,6 +13,7 @@ const getHostById = async (id) => {
       phoneNumber: true,
       profilePicture: true,
       aboutMe: true,
+      listings: true,
     },
   });
 };

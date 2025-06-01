@@ -11,6 +11,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   const { username, email } = req.query;
+  console.log("filters", req.query);
   const users = await getUsers({ username, email });
   res.status(200).json(users);
 });
@@ -30,9 +31,15 @@ router.get(
   notFoundErrorHandler
 );
 
-router.post("/", async (req, res, next) => {
+router.post("/", authMiddleware, async (req, res, next) => {
   const { username, password, name, email, phoneNumber, profilePicture } =
     req.body;
+
+  if (!username || !password || !name || !email) {
+    return res.status(400).json({
+      error: "Missing required fields: username, password, name, or email",
+    });
+  }
   try {
     const newUser = await createUser(
       username,
@@ -48,30 +55,34 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.put("/:id", authMiddleware, async (req, res) => {
-  const { id } = req.params;
-  const { username, password, name, email, phoneNumber, profilePicture } =
-    req.body;
-  try {
-    const updatedUser = await updateUser(
-      id,
-      username,
-      password,
-      name,
-      email,
-      phoneNumber,
-      profilePicture
-    );
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+router.put(
+  "/:id",
+  authMiddleware,
+  async (req, res, next) => {
+    const { id } = req.params;
+    const { username, password, name, email, phoneNumber, profilePicture } =
+      req.body;
+    try {
+      const updatedUser = await updateUser(
+        id,
+        username,
+        password,
+        name,
+        email,
+        phoneNumber,
+        profilePicture
+      );
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      next(error);
+    }
+  },
+  notFoundErrorHandler
+);
 
 router.delete(
   "/:id",
-
+  authMiddleware,
   async (req, res, next) => {
     const { id } = req.params;
     try {
