@@ -49,7 +49,6 @@ router.post(
         maxGuestCount,
         hostId,
         rating,
-        amenities,
       } = req.body;
       console.log(req.body);
 
@@ -61,8 +60,7 @@ router.post(
         !bedroomCount ||
         !bathRoomCount ||
         !maxGuestCount ||
-        !hostId ||
-        !amenities
+        !hostId
       ) {
         return res.status(400).json({
           error:
@@ -79,8 +77,7 @@ router.post(
         bathRoomCount,
         maxGuestCount,
         hostId,
-        rating,
-        amenities
+        rating
       );
       res.status(201).json(newProperty);
     } catch (error) {
