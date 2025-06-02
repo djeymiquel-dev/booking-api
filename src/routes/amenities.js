@@ -6,13 +6,17 @@ import updateAmenity from "../../src/services/amenities/updateAmenity.js";
 import deleteAmenity from "../../src/services/amenities/deleteAmenity.js";
 import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 import authMiddleware from "../middleware/auth.js";
-import ConflictError from "../errors/ConflictError.js";
-// import conflictErrorHandler from "../middleware/conflictErrorHandler.js";
+import conflictErrorHandler from "../middleware/conflictErrorHandler.js";
 
 const router = express.Router();
-router.get("/", async (req, res) => {
-  const amenities = await getAmenities();
-  res.status(200).json(amenities);
+
+router.get("/", async (req, res, next) => {
+  try {
+    const amenities = await getAmenities();
+    res.status(200).json(amenities);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get(
@@ -21,9 +25,7 @@ router.get(
     try {
       const { id } = req.params;
       const amenity = await getAmenityById(id);
-      // if (!amenity) {
-      //   return res.status(404).json({ error: "Amenity not found" });
-      // }
+
       res.status(200).json(amenity);
     } catch (error) {
       console.error(error);
@@ -35,19 +37,24 @@ router.get(
 
 router.post(
   "/",
-
   async (req, res, next) => {
-    try {
-      const { name } = req.body;
-      console.log("req body:", req.body);
+    const { name } = req.body;
 
+    if (!name || typeof name !== "string" || name.trim() === "") {
+      return res.status(400).json({
+        error: "Amenity name is required and must be a non-empty string.",
+      });
+    }
+
+    try {
       const newAmenity = await createAmenity(name);
       res.status(201).json(newAmenity);
     } catch (error) {
+      // Laat service de juiste error gooien
       next(error);
     }
-  }
-  // conflictErrorHandler
+  },
+  conflictErrorHandler
 );
 
 router.put(

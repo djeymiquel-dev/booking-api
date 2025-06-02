@@ -6,6 +6,8 @@ import updateProperty from "../services/properties/updateProperty.js";
 import deleteProperty from "../services/properties/deleteProperty.js";
 import authMiddleware from "../middleware/auth.js";
 import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
+import NotFoundError from "../errors/NotFoundError.js";
+NotFoundError;
 
 const router = express.Router();
 
@@ -23,11 +25,18 @@ router.get(
       const { id } = req.params;
       const property = await getPropertyById(id);
 
+      // if (!property) {
+      //   throw new NotFoundError("Property", id);
+      // }
+      // console.log("eas statusCode", res.statusCode);
+
       console.log("property", property);
-      console.log("req.params", req.params);
+      // console.log("req.params", req.params);
 
       res.status(200).json(property);
+      // console.log("property returned", property);
     } catch (error) {
+      console.log("error", error);
       next(error);
     }
   },

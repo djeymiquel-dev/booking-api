@@ -5,7 +5,10 @@ const deleteUser = async (id) => {
   const deleteUser = await prisma.user.deleteMany({
     where: { id },
   });
-  if (!deleteUser || deleteUser.count === 0) {
+  console.log(deleteUser);
+  console.log(id);
+
+  if (!id || deleteUser.count === 0) {
     throw new NotFoundError("User", id);
   }
   return id;
