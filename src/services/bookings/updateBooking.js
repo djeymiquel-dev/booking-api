@@ -25,7 +25,7 @@ const updateBooking = async (
     },
   });
   if (!booking || booking.count === 0) {
-    throw new NotFoundError(`Booking with id ${id} not found.`);
+    throw new NotFoundError("Booking", id);
   }
   return {
     message: `Booking with id ${id} updated successfully`,

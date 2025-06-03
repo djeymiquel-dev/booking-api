@@ -13,19 +13,20 @@ router.get("/", async (req, res) => {
   res.status(200).json(hosts);
 });
 
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const host = await getHostById(id);
-    if (!host) {
-      return res.status(404).json({ error: "Host not found" });
+router.get(
+  "/:id",
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const host = await getHostById(id);
+      res.status(200).json(host);
+    } catch (error) {
+      console.error(error);
+      next(error);
     }
-    res.status(200).json(host);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+  },
+  notFoundErrorHandler
+);
 
 router.post(
   "/",

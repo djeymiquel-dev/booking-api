@@ -1,4 +1,3 @@
-import NotFoundError from "../../errors/NotFoundError.js";
 import { PrismaClient } from "../../generated/prisma/index.js";
 const prisma = new PrismaClient();
 
@@ -12,7 +11,6 @@ const createProperty = async (
   maxGuestCount,
   hostId,
   rating
-  // amenities = []
 ) => {
   const newProperty = await prisma.property.create({
     data: {
@@ -27,19 +25,8 @@ const createProperty = async (
         connect: { id: hostId },
       },
       rating: rating || 0,
-      // amenities: {
-      //   connect: amenities.map((name) => ({ name })),
-      // },
     },
-    // include: {
-    //   amenities: {
-    //     select: {
-    //       name: true,
-    //     },
-    //   },
-    // },
   });
-
   return newProperty;
 };
 

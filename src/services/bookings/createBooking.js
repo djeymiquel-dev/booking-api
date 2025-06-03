@@ -25,7 +25,6 @@ const createBooking = async (
       bookingStatus,
     },
   });
-  console.log("Booking created:", booking);
 
   return booking;
 };

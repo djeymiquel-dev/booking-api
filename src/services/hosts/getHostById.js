@@ -1,8 +1,9 @@
+import NotFoundError from "../../errors/NotFoundError.js";
 import { PrismaClient } from "../../generated/prisma/index.js";
 
 const prisma = new PrismaClient();
 const getHostById = async (id) => {
-  return await prisma.host.findUnique({
+  const host = await prisma.host.findUnique({
     where: { id },
     select: {
       id: true,
@@ -16,6 +17,10 @@ const getHostById = async (id) => {
       listings: true,
     },
   });
+  if (!host) {
+    throw new NotFoundError("Host", id);
+  }
+  return host;
 };
 
 export default getHostById;

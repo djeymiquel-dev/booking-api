@@ -6,7 +6,6 @@ import updateAmenity from "../../src/services/amenities/updateAmenity.js";
 import deleteAmenity from "../../src/services/amenities/deleteAmenity.js";
 import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
 import authMiddleware from "../middleware/auth.js";
-import conflictErrorHandler from "../middleware/conflictErrorHandler.js";
 
 const router = express.Router();
 
@@ -37,6 +36,7 @@ router.get(
 
 router.post(
   "/",
+  // authMiddleware,
   async (req, res, next) => {
     const { name } = req.body;
 
@@ -50,11 +50,9 @@ router.post(
       const newAmenity = await createAmenity(name);
       res.status(201).json(newAmenity);
     } catch (error) {
-      // Laat service de juiste error gooien
       next(error);
     }
-  },
-  conflictErrorHandler
+  }
 );
 
 router.put(
@@ -75,7 +73,7 @@ router.put(
 
 router.delete(
   "/:id",
-  authMiddleware,
+  // authMiddleware,
   async (req, res, next) => {
     try {
       const { id } = req.params;

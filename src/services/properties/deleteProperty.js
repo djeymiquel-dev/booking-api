@@ -4,14 +4,11 @@ import NotFoundError from "../../errors/NotFoundError.js";
 const prisma = new PrismaClient();
 const deleteProperty = async (id) => {
   const property = await prisma.property.deleteMany({
-    where: { id: id },
+    where: { id },
   });
-  console.log("prop", property);
-  console.log(id);
-
   if (property.count === 0) {
     throw new NotFoundError("Property", id);
   }
-  return id;
+  return property;
 };
 export default deleteProperty;

@@ -4,10 +4,8 @@ import getPropertyById from "../services/properties/getPropertyById.js";
 import createProperty from "../services/properties/createProperty.js";
 import updateProperty from "../services/properties/updateProperty.js";
 import deleteProperty from "../services/properties/deleteProperty.js";
-import authMiddleware from "../middleware/auth.js";
 import notFoundErrorHandler from "../middleware/notFoundErrorHandler.js";
-import NotFoundError from "../errors/NotFoundError.js";
-NotFoundError;
+import authMiddleware from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -21,22 +19,14 @@ router.get("/", async (req, res) => {
 router.get(
   "/:id",
   async (req, res, next) => {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
       const property = await getPropertyById(id);
-
-      // if (!property) {
-      //   throw new NotFoundError("Property", id);
-      // }
-      // console.log("eas statusCode", res.statusCode);
-
       console.log("property", property);
-      // console.log("req.params", req.params);
 
       res.status(200).json(property);
-      // console.log("property returned", property);
     } catch (error) {
-      console.log("error", error);
+      console.log("prop error:", error);
       next(error);
     }
   },
@@ -102,6 +92,7 @@ router.put(
   async (req, res, next) => {
     try {
       const { id } = req.params;
+      // console.log("req params:", req.params);
       const {
         title,
         description,
@@ -113,6 +104,8 @@ router.put(
         hostId,
         rating,
       } = req.body;
+      console.log(req.body);
+
       const updatedProperty = await updateProperty(
         id,
         title,
@@ -125,6 +118,8 @@ router.put(
         hostId,
         rating
       );
+      console.log("updated Property:", updatedProperty);
+
       res.status(200).json(updatedProperty);
     } catch (error) {
       next(error);
@@ -139,11 +134,16 @@ router.delete(
   async (req, res, next) => {
     try {
       const { id } = req.params;
+
       const deletedProperty = await deleteProperty(id);
+      console.log(deletedProperty);
+
       res.status(200).json({
         message: `Property with id ${deletedProperty} deleted succesfully`,
       });
     } catch (error) {
+      console.log("prop error:", error);
+
       next(error);
     }
   },

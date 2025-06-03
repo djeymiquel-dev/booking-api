@@ -1,4 +1,4 @@
-import ConflictError from "../../errors/ConflictError.js";
+import NotFoundError from "../../errors/NotFoundError.js";
 import { PrismaClient } from "../../generated/prisma/index.js";
 
 const prisma = new PrismaClient();
@@ -16,7 +16,6 @@ const createAmenity = async (name) => {
       name,
     },
   });
-
   return newAmenity;
 };
 

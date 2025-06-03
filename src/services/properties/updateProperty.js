@@ -13,29 +13,8 @@ const updateProperty = async (
   maxGuestCount,
   hostId,
   rating
-  // amenities = [] // Assuming amenities is an array of amenity IDs
+  // amenities = []
 ) => {
-  // let amenityConnections = undefined;
-  // if (amenities.length > 0) {
-  //   const allAmenities = await prisma.amenity.findMany({
-  //     where: {
-  //       name: { in: amenities },
-  //     },
-  //     select: { name: true },
-  //   });
-
-  //   const foundAmenityNames = allAmenities.map((a) => a.name);
-  //   const missing = amenities.filter((a) => !foundAmenityNames.includes(a));
-  //   if (missing.length > 0) {
-  //     throw new Error(`Amenities not found: ${missing.join(", ")}`);
-  //   }
-
-  //   // connect via .set (vervangt oude relaties)
-  //   amenityConnections = {
-  //     set: foundAmenityNames.map((name) => ({ name })),
-  //   };
-  // }
-
   const property = await prisma.property.updateMany({
     where: { id },
     data: {
@@ -47,11 +26,13 @@ const updateProperty = async (
       bathRoomCount,
       maxGuestCount,
       hostId,
-      rating: rating || 0, // Default to 0 if not provided
-      // ...(amenityConnections ? { amenities: amenityConnections } : {}),
+      rating, // Default to 0 if not provided
+      // amenities: {
+      //   connect: [{ name: "Heating" }, { name: "Washer" }],
+      // },
     },
   });
-  console.log("property", property);
+  // console.log(property);
 
   if (!property || property.count === 0) {
     throw new NotFoundError("Property", id);
