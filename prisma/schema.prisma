@@ -13,7 +13,6 @@ generator client {
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
-  // relationMode = "prisma"
 }
 
 model User {
@@ -24,7 +23,7 @@ model User {
   email          String
   phoneNumber    String
   profilePicture String
-  bookings        Booking[]
+  bookings       Booking[]
   reviews        Review[]
 }
 
@@ -39,8 +38,8 @@ model Property {
   maxGuestCount Int
   rating        Int
 
-  hostId  String?
-  host    Host?     @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  hostId   String?
+  host     Host?     @relation(fields: [hostId], references: [id])
   bookings Booking[]
 
   reviews   Review[]

@@ -16,12 +16,11 @@ router.get("/", async (req, res) => {
 router.get(
   "/:id",
   async (req, res, next) => {
-    const { id } = req.params;
     try {
+      const { id } = req.params;
       const review = await getReviewById(id);
       res.status(200).json(review);
     } catch (error) {
-      console.error(error);
       next(error);
     }
   },
@@ -29,13 +28,14 @@ router.get(
 );
 
 router.post("/", authMiddleware, async (req, res) => {
-  const { userId, propertyId, rating, comment } = req.body;
-  if (!userId || !propertyId || rating === undefined || !comment) {
-    return res.status(400).json({
-      error: "Missing required fields: userId, propertyId, rating, or comment",
-    });
-  }
   try {
+    const { userId, propertyId, rating, comment } = req.body;
+    if (!userId || !propertyId || rating === undefined || !comment) {
+      return res.status(400).json({
+        error:
+          "Missing required fields: userId, propertyId, rating, or comment",
+      });
+    }
     const newReview = await createReview(userId, propertyId, rating, comment);
     res.status(201).json(newReview);
   } catch (error) {
@@ -47,9 +47,9 @@ router.put(
   "/:id",
   authMiddleware,
   async (req, res, next) => {
-    const { id } = req.params;
-    const { userId, propertyId, rating, comment } = req.body;
     try {
+      const { id } = req.params;
+      const { userId, propertyId, rating, comment } = req.body;
       const updatedReview = await updateReview(
         id,
         userId,
@@ -70,8 +70,8 @@ router.delete(
   "/:id",
   authMiddleware,
   async (req, res, next) => {
-    const { id } = req.params;
     try {
+      const { id } = req.params;
       const deletedReview = await deleteReview(id);
       res.status(200).json({
         message: `Review with id ${deletedReview} deleted successfully`,

@@ -11,7 +11,6 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   const { location, pricePerNight } = req.query;
-  console.log("req query:", req.query);
   const properties = await getProperties({ location, pricePerNight });
   res.status(200).json(properties);
 });
@@ -19,10 +18,9 @@ router.get("/", async (req, res) => {
 router.get(
   "/:id",
   async (req, res, next) => {
-    const { id } = req.params;
     try {
+      const { id } = req.params;
       const property = await getPropertyById(id);
-      console.log("property", property);
 
       res.status(200).json(property);
     } catch (error) {
@@ -92,7 +90,6 @@ router.put(
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      // console.log("req params:", req.params);
       const {
         title,
         description,
@@ -118,7 +115,6 @@ router.put(
         hostId,
         rating
       );
-      console.log("updated Property:", updatedProperty);
 
       res.status(200).json(updatedProperty);
     } catch (error) {
@@ -134,7 +130,6 @@ router.delete(
   async (req, res, next) => {
     try {
       const { id } = req.params;
-
       const deletedProperty = await deleteProperty(id);
       console.log(deletedProperty);
 
@@ -142,8 +137,6 @@ router.delete(
         message: `Property with id ${deletedProperty} deleted succesfully`,
       });
     } catch (error) {
-      console.log("prop error:", error);
-
       next(error);
     }
   },

@@ -27,7 +27,6 @@ router.get(
 
       res.status(200).json(amenity);
     } catch (error) {
-      console.error(error);
       next(error);
     }
   },
@@ -38,15 +37,15 @@ router.post(
   "/",
   // authMiddleware,
   async (req, res, next) => {
-    const { name } = req.body;
-
-    if (!name || typeof name !== "string" || name.trim() === "") {
-      return res.status(400).json({
-        error: "Amenity name is required and must be a non-empty string.",
-      });
-    }
-
     try {
+      const { name } = req.body;
+
+      if (!name || typeof name !== "string" || name.trim() === "") {
+        return res.status(400).json({
+          error: "Amenity name is required and must be a non-empty string.",
+        });
+      }
+
       const newAmenity = await createAmenity(name);
       res.status(201).json(newAmenity);
     } catch (error) {
@@ -59,9 +58,9 @@ router.put(
   "/:id",
   // authMiddleware,
   async (req, res, next) => {
-    const { id } = req.params;
-    const { name } = req.body;
     try {
+      const { id } = req.params;
+      const { name } = req.body;
       const updatedAmenity = await updateAmenity(id, name);
       res.status(200).json(updatedAmenity);
     } catch (error) {

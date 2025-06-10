@@ -31,29 +31,29 @@ router.get(
 router.post(
   "/",
   //  authMiddleware,
-  async (req, res) => {
-    const {
-      userId,
-      propertyId,
-      checkinDate,
-      checkoutDate,
-      numberOfGuests,
-      totalPrice,
-      bookingStatus,
-    } = req.body;
-
-    if (
-      !userId ||
-      !propertyId ||
-      !checkinDate ||
-      !checkoutDate ||
-      !numberOfGuests ||
-      !totalPrice ||
-      !bookingStatus
-    ) {
-      return res.status(400).json({ error: "User ID is required" });
-    }
+  async (req, res, next) => {
     try {
+      const {
+        userId,
+        propertyId,
+        checkinDate,
+        checkoutDate,
+        numberOfGuests,
+        totalPrice,
+        bookingStatus,
+      } = req.body;
+
+      if (
+        !userId ||
+        !propertyId ||
+        !checkinDate ||
+        !checkoutDate ||
+        !numberOfGuests ||
+        !totalPrice ||
+        !bookingStatus
+      ) {
+        return res.status(400).json({ error: "User ID is required" });
+      }
       const newBooking = await createBooking(
         userId,
         propertyId,
@@ -63,31 +63,30 @@ router.post(
         totalPrice,
         bookingStatus
       );
-      console.log("New booking created:", newBooking);
 
       res.status(201).json(newBooking);
     } catch (error) {
-      console.error(error);
       next(error);
     }
-  }
+  },
+  notFoundErrorHandler
 );
 
 router.put(
   "/:id",
   authMiddleware,
   async (req, res, next) => {
-    const { id } = req.params;
-    const {
-      userId,
-      propertyId,
-      checkinDate,
-      checkoutDate,
-      numberOfGuests,
-      totalPrice,
-      bookingStatus,
-    } = req.body;
     try {
+      const { id } = req.params;
+      const {
+        userId,
+        propertyId,
+        checkinDate,
+        checkoutDate,
+        numberOfGuests,
+        totalPrice,
+        bookingStatus,
+      } = req.body;
       const updatedBooking = await updateBooking(
         id,
         userId,
@@ -110,8 +109,8 @@ router.delete(
   "/:id",
   authMiddleware,
   async (req, res, next) => {
-    const { id } = req.params;
     try {
+      const { id } = req.params;
       const deletedBooking = await deleteBooking(id);
       res.status(200).json(deletedBooking);
     } catch (error) {

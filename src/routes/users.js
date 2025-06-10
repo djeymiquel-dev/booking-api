@@ -31,38 +31,42 @@ router.get(
   notFoundErrorHandler
 );
 
-router.post("/", authMiddleware, async (req, res, next) => {
-  const { username, password, name, email, phoneNumber, profilePicture } =
-    req.body;
+router.post(
+  "/",
+  // authMiddleware,
+  async (req, res, next) => {
+    try {
+      const { username, password, name, email, phoneNumber, profilePicture } =
+        req.body;
 
-  if (!username || !password || !name || !email) {
-    return res.status(400).json({
-      error: "Missing required fields: username, password, name, or email",
-    });
+      if (!username || !password || !name || !email) {
+        return res.status(400).json({
+          error: "Missing required fields: username, password, name, or email",
+        });
+      }
+      const newUser = await createUser(
+        username,
+        password,
+        name,
+        email,
+        phoneNumber,
+        profilePicture
+      );
+      res.status(201).json(newUser);
+    } catch (error) {
+      next(error);
+    }
   }
-  try {
-    const newUser = await createUser(
-      username,
-      password,
-      name,
-      email,
-      phoneNumber,
-      profilePicture
-    );
-    res.status(201).json(newUser);
-  } catch (error) {
-    next(error);
-  }
-});
+);
 
 router.put(
   "/:id",
-  authMiddleware,
+  // authMiddleware,
   async (req, res, next) => {
-    const { id } = req.params;
-    const { username, password, name, email, phoneNumber, profilePicture } =
-      req.body;
     try {
+      const { id } = req.params;
+      const { username, password, name, email, phoneNumber, profilePicture } =
+        req.body;
       const updatedUser = await updateUser(
         id,
         username,
@@ -84,8 +88,8 @@ router.delete(
   "/:id",
   // authMiddleware,
   async (req, res, next) => {
-    const { id } = req.params;
     try {
+      const { id } = req.params;
       const deletedUser = await deleteUser(id);
       res.status(200).json({
         message: `User with id ${deletedUser} was deleted successfully`,
