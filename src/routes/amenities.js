@@ -33,30 +33,26 @@ router.get(
   notFoundErrorHandler
 );
 
-router.post(
-  "/",
-  // authMiddleware,
-  async (req, res, next) => {
-    try {
-      const { name } = req.body;
+router.post("/", authMiddleware, async (req, res, next) => {
+  try {
+    const { name } = req.body;
 
-      if (!name || typeof name !== "string" || name.trim() === "") {
-        return res.status(400).json({
-          error: "Amenity name is required and must be a non-empty string.",
-        });
-      }
-
-      const newAmenity = await createAmenity(name);
-      res.status(201).json(newAmenity);
-    } catch (error) {
-      next(error);
+    if (!name || typeof name !== "string" || name.trim() === "") {
+      return res.status(400).json({
+        error: "Amenity name is required and must be a non-empty string.",
+      });
     }
+
+    const newAmenity = await createAmenity(name);
+    res.status(201).json(newAmenity);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 router.put(
   "/:id",
-  // authMiddleware,
+  authMiddleware,
   async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -72,7 +68,7 @@ router.put(
 
 router.delete(
   "/:id",
-  // authMiddleware,
+  authMiddleware,
   async (req, res, next) => {
     try {
       const { id } = req.params;

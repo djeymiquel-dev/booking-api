@@ -9,9 +9,7 @@ const getProperties = async (filters = {}) => {
     where: {
       ...(location && { location }),
       ...(pricePerNight && {
-        pricePerNight: {
-          lte: pricePerNight,
-        },
+        pricePerNight,
       }),
     },
 

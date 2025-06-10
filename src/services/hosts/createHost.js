@@ -9,6 +9,16 @@ const createHost = async (
   profilePicture,
   aboutMe
 ) => {
+  const existingHost = await prisma.host.findFirst({
+    where: {
+      OR: [{ username: username }, { email: email }],
+    },
+  });
+
+  if (existingHost) {
+    return "Host already exist";
+  }
+
   const newHost = await prisma.host.create({
     data: {
       username,

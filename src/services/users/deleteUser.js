@@ -8,7 +8,7 @@ const deleteUser = async (id) => {
   console.log(deleteUser);
   console.log(id);
 
-  if (!id || deleteUser.count === 0) {
+  if (!deleteUser || deleteUser.count === 0) {
     throw new NotFoundError("User", id);
   }
   return id;

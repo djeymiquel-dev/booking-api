@@ -31,61 +31,56 @@ router.get(
   notFoundErrorHandler
 );
 
-router.post(
-  "/",
-  // authMiddleware,
-  async (req, res, next) => {
-    try {
-      const {
-        title,
-        description,
-        location,
-        pricePerNight,
-        bedroomCount,
-        bathRoomCount,
-        maxGuestCount,
-        hostId,
-        rating,
-      } = req.body;
-      console.log(req.body);
+router.post("/", authMiddleware, async (req, res, next) => {
+  try {
+    const {
+      title,
+      description,
+      location,
+      pricePerNight,
+      bedroomCount,
+      bathRoomCount,
+      maxGuestCount,
+      hostId,
+      rating,
+    } = req.body;
 
-      if (
-        !title ||
-        !description ||
-        !location ||
-        !pricePerNight ||
-        !bedroomCount ||
-        !bathRoomCount ||
-        !maxGuestCount ||
-        !hostId
-      ) {
-        return res.status(400).json({
-          error:
-            "Missing required fields: title, description, location, pricePerNight, bedroomCount, bathRoomCount, maxGuestCount, amenities or hostId",
-        });
-      }
-
-      const newProperty = await createProperty(
-        title,
-        description,
-        location,
-        pricePerNight,
-        bedroomCount,
-        bathRoomCount,
-        maxGuestCount,
-        hostId,
-        rating
-      );
-      res.status(201).json(newProperty);
-    } catch (error) {
-      next(error);
+    if (
+      !title ||
+      !description ||
+      !location ||
+      !pricePerNight ||
+      !bedroomCount ||
+      !bathRoomCount ||
+      !maxGuestCount ||
+      !hostId
+    ) {
+      return res.status(400).json({
+        error:
+          "Missing required fields: title, description, location, pricePerNight, bedroomCount, bathRoomCount, maxGuestCount, amenities or hostId",
+      });
     }
+
+    const newProperty = await createProperty(
+      title,
+      description,
+      location,
+      pricePerNight,
+      bedroomCount,
+      bathRoomCount,
+      maxGuestCount,
+      hostId,
+      rating
+    );
+    res.status(201).json(newProperty);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 router.put(
   "/:id",
-  // authMiddleware,
+  authMiddleware,
 
   async (req, res, next) => {
     try {
@@ -126,7 +121,7 @@ router.put(
 
 router.delete(
   "/:id",
-  // authMiddleware,
+  authMiddleware,
   async (req, res, next) => {
     try {
       const { id } = req.params;

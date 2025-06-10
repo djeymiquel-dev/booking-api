@@ -20,17 +20,21 @@ router.get(
     try {
       const { id } = req.params;
       const booking = await getBookingById(id);
-      res.status(200).json(booking);
+      if (!booking) {
+        res.status(404).json(booking);
+      } else {
+        res.status(200).json(booking);
+      }
     } catch (error) {
       next(error);
     }
-  },
-  notFoundErrorHandler
+  }
+  // notFoundErrorHandler
 );
 
 router.post(
   "/",
-  //  authMiddleware,
+  authMiddleware,
   async (req, res, next) => {
     try {
       const {

@@ -32,8 +32,8 @@ router.get(
 
 router.post(
   "/",
-  authMiddleware,
-  async (req, res) => {
+  // authMiddleware,
+  async (req, res, next) => {
     try {
       const {
         username,
@@ -44,11 +44,25 @@ router.post(
         profilePicture,
         aboutMe,
       } = req.body;
-      if (!username || !password || !name || !email) {
+      const requiredFields = {
+        username,
+        password,
+        name,
+        email,
+        phoneNumber,
+        profilePicture,
+        aboutMe,
+      };
+      const missingFields = Object.keys(requiredFields).filter(
+        (field) => !requiredFields[field]
+      );
+
+      if (missingFields.length > 0) {
         return res.status(400).json({
-          error: "Missing required fields: username, password, name, or email",
+          error: `Missing required fields: ${missingFields.join(", ")}`,
         });
       }
+
       const newHost = await createHost(
         username,
         password,
@@ -58,12 +72,15 @@ router.post(
         profilePicture,
         aboutMe
       );
-      res.status(201).json(newHost);
+      res.status(201).json({
+        success: true,
+        data: newHost,
+        message: "Host created successfully",
+      });
     } catch (error) {
       next(error);
     }
-  },
-  notFoundErrorHandler
+  }
 );
 
 router.put(

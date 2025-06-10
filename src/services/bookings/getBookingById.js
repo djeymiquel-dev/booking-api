@@ -11,7 +11,7 @@ const getBookingById = async (id) => {
     },
   });
   if (!booking) {
-    throw new NotFoundError("Booking", id);
+    return null
   }
   return booking;
 };

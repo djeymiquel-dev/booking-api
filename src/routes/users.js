@@ -31,37 +31,33 @@ router.get(
   notFoundErrorHandler
 );
 
-router.post(
-  "/",
-  // authMiddleware,
-  async (req, res, next) => {
-    try {
-      const { username, password, name, email, phoneNumber, profilePicture } =
-        req.body;
+router.post("/", authMiddleware, async (req, res, next) => {
+  try {
+    const { username, password, name, email, phoneNumber, profilePicture } =
+      req.body;
 
-      if (!username || !password || !name || !email) {
-        return res.status(400).json({
-          error: "Missing required fields: username, password, name, or email",
-        });
-      }
-      const newUser = await createUser(
-        username,
-        password,
-        name,
-        email,
-        phoneNumber,
-        profilePicture
-      );
-      res.status(201).json(newUser);
-    } catch (error) {
-      next(error);
+    if (!username || !password || !name || !email) {
+      return res.status(400).json({
+        error: "Missing required fields: username, password, name, or email",
+      });
     }
+    const newUser = await createUser(
+      username,
+      password,
+      name,
+      email,
+      phoneNumber,
+      profilePicture
+    );
+    res.status(201).json(newUser);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 router.put(
   "/:id",
-  // authMiddleware,
+  authMiddleware,
   async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -86,7 +82,7 @@ router.put(
 
 router.delete(
   "/:id",
-  // authMiddleware,
+  authMiddleware,
   async (req, res, next) => {
     try {
       const { id } = req.params;
